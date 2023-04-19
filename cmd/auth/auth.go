@@ -70,7 +70,7 @@ var AuthCmd = &cobra.Command{
 			password = strings.TrimSpace(string(bytePassword))
 		}
 
-		provider := ai.AIProvider{
+		newProvider := ai.AIProvider{
 			Name:     backend,
 			Model:    model,
 			Password: password,
@@ -82,11 +82,11 @@ var AuthCmd = &cobra.Command{
 
 		if providerIndex == -1 {
 			// provider with same name does not exist, add new provider to list
-			configAI.Providers = append(configAI.Providers, provider)
+			configAI.Providers = append(configAI.Providers, newProvider)
 			color.Green("New provider added")
 		} else {
 			// provider with same name exists, update provider info
-			configAI.Providers[providerIndex] = provider
+			configAI.Providers[providerIndex] = newProvider
 			color.Green("Provider updated")
 		}
 		viper.Set("ai", configAI)
