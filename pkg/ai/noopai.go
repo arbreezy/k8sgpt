@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"strings"
+
 	"github.com/fatih/color"
 	"github.com/k8sgpt-ai/k8sgpt/pkg/util"
 	"github.com/spf13/viper"
-	"strings"
 )
 
 type NoOpAIClient struct {
@@ -16,10 +17,10 @@ type NoOpAIClient struct {
 	model    string
 }
 
-func (c *NoOpAIClient) Configure(token string, model string, language string) error {
-	c.language = language
-	c.client = fmt.Sprintf("I am a noop client with the token %s ", token)
-	c.model = model
+func (c *NoOpAIClient) Configure(config IAIConfig, lang string) error {
+	c.language = lang
+	c.client = fmt.Sprintf("I am a noop client with the token %s ", config.GetToken())
+	c.model = config.GetModel()
 	return nil
 }
 

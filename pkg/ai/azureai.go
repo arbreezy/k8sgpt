@@ -15,24 +15,20 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-const (
-	default_prompt = "Simplify the following Kubernetes error message and provide a solution in %s: %s"
-	prompt_a       = "Read the following input %s and provide possible scenarios for remediation in %s"
-	prompt_b       = "Considering the following input from the Kubernetes resource %s and the error message %s, provide possible scenarios for remediation in %s"
-	prompt_c       = "Reading the following %s error message and it's accompanying log message %s, how would you simplify this message?"
-)
-
-type OpenAIClient struct {
+type AzureAIClient struct {
 	client   *openai.Client
 	language string
 	model    string
 }
 
-func (c *OpenAIClient) Configure(config IAIConfig, lang string) error {
+func (c *AzureAIClient) Configure(config IAIConfig, lang string) error {
 	token := config.GetToken()
-	client := openai.NewClient(token)
+	baseURL := config.GetBaseURL()
+	engine := config.GetEngine()
+	defaultConfig := openai.DefaultAzureConfig(token, baseURL, engine)
+	client := openai.NewClientWithConfig(defaultConfig)
 	if client == nil {
-		return errors.New("error creating OpenAI client")
+		return errors.New("error creating Azure OpenAI client")
 	}
 	c.language = lang
 	c.client = client
@@ -40,7 +36,7 @@ func (c *OpenAIClient) Configure(config IAIConfig, lang string) error {
 	return nil
 }
 
-func (c *OpenAIClient) GetCompletion(ctx context.Context, prompt string) (string, error) {
+func (c *AzureAIClient) GetCompletion(ctx context.Context, prompt string) (string, error) {
 	// Create a completion request
 	resp, err := c.client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
 		Model: c.model,
@@ -57,7 +53,7 @@ func (c *OpenAIClient) GetCompletion(ctx context.Context, prompt string) (string
 	return resp.Choices[0].Message.Content, nil
 }
 
-func (a *OpenAIClient) Parse(ctx context.Context, prompt []string, nocache bool) (string, error) {
+func (a *AzureAIClient) Parse(ctx context.Context, prompt []string, nocache bool) (string, error) {
 	inputKey := strings.Join(prompt, " ")
 	// Check for cached data
 	sEnc := base64.StdEncoding.EncodeToString([]byte(inputKey))
@@ -93,6 +89,6 @@ func (a *OpenAIClient) Parse(ctx context.Context, prompt []string, nocache bool)
 	return response, nil
 }
 
-func (a *OpenAIClient) GetName() string {
-	return "openai"
+func (a *AzureAIClient) GetName() string {
+	return "azureopenai"
 }

@@ -17,6 +17,8 @@ var (
 	backend  string
 	password string
 	model    string
+	baseURL  string
+	azEngine string
 )
 
 // authCmd represents the auth command
@@ -57,7 +59,7 @@ var AuthCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if password == "" {
+		if ai.NeedPassword(backend) && password == "" {
 			fmt.Printf("Enter %s Key: ", backend)
 			bytePassword, err := term.ReadPassword(int(syscall.Stdin))
 			if err != nil {
@@ -68,20 +70,23 @@ var AuthCmd = &cobra.Command{
 			password = strings.TrimSpace(string(bytePassword))
 		}
 
-		// create new provider object
-		newProvider := ai.AIProvider{
+		provider := ai.AIProvider{
 			Name:     backend,
 			Model:    model,
 			Password: password,
+			BaseURL:  baseURL,
+			Engine:   azEngine,
 		}
+
+		color.Green("\nUsing %s as backend AI provider", backend)
 
 		if providerIndex == -1 {
 			// provider with same name does not exist, add new provider to list
-			configAI.Providers = append(configAI.Providers, newProvider)
+			configAI.Providers = append(configAI.Providers, provider)
 			color.Green("New provider added")
 		} else {
 			// provider with same name exists, update provider info
-			configAI.Providers[providerIndex] = newProvider
+			configAI.Providers[providerIndex] = provider
 			color.Green("Provider updated")
 		}
 		viper.Set("ai", configAI)
@@ -100,4 +105,8 @@ func init() {
 	AuthCmd.Flags().StringVarP(&model, "model", "m", "gpt-3.5-turbo", "Backend AI model")
 	// add flag for password
 	AuthCmd.Flags().StringVarP(&password, "password", "p", "", "Backend AI password")
+	// add flag for url
+	AuthCmd.Flags().StringVarP(&baseURL, "baseurl", "u", "", "URL AI provider, (e.g `http://localhost:8080/v1`)")
+	// add flag for azure open ai engine/deployment name
+	AuthCmd.Flags().StringVarP(&azEngine, "engine", "e", "", "Azure AI deployment name")
 }
