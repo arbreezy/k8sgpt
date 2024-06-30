@@ -27,6 +27,7 @@ import (
 
 var (
 	explain         bool
+	customHeader    string
 	backend         string
 	output          string
 	filters         []string
@@ -56,6 +57,7 @@ var AnalyzeCmd = &cobra.Command{
 			namespace,
 			nocache,
 			explain,
+			customHeader,
 			maxConcurrency,
 			withDoc,
 			interactiveMode,
@@ -124,6 +126,8 @@ func init() {
 	AnalyzeCmd.Flags().StringSliceVarP(&filters, "filter", "f", []string{}, "Filter for these analyzers (e.g. Pod, PersistentVolumeClaim, Service, ReplicaSet)")
 	// explain flag
 	AnalyzeCmd.Flags().BoolVarP(&explain, "explain", "e", false, "Explain the problem to me")
+	// add custom header
+	AnalyzeCmd.Flags().StringVarP(&customHeader, "custom-header", "r", "", "Custom Header, <key>:<value> (e.g CustomHeaderKey:CustomHeaderValue)")
 	// add flag for backend
 	AnalyzeCmd.Flags().StringVarP(&backend, "backend", "b", "", "Backend AI provider")
 	// output as json

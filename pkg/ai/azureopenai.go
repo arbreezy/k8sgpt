@@ -19,7 +19,7 @@ type AzureAIClient struct {
 	temperature float32
 }
 
-func (c *AzureAIClient) Configure(config IAIConfig) error {
+func (c *AzureAIClient) Configure(config IAIConfig, _ string) error {
 	token := config.GetPassword()
 	baseURL := config.GetBaseURL()
 	engine := config.GetEngine()
@@ -34,7 +34,7 @@ func (c *AzureAIClient) Configure(config IAIConfig) error {
 		return azureModelMapping[model]
 
 	}
-	
+
 	if proxyEndpoint != "" {
 		proxyUrl, err := url.Parse(proxyEndpoint)
 		if err != nil {

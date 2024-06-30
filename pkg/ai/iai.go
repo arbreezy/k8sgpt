@@ -48,7 +48,7 @@ var (
 type IAI interface {
 	// Configure sets up client for given configuration. This is expected to be
 	// executed once per client life-time (e.g. analysis CLI command invocation).
-	Configure(config IAIConfig) error
+	Configure(config IAIConfig, customHeader string) error
 	// GetCompletion generates text based on prompt.
 	GetCompletion(ctx context.Context, prompt string) (string, error)
 	// GetName returns name of the backend/client.
@@ -105,6 +105,7 @@ type AIProvider struct {
 	ProviderId     string  `mapstructure:"providerid" yaml:"providerid,omitempty"`
 	TopP           float32 `mapstructure:"topp" yaml:"topp,omitempty"`
 	MaxTokens      int     `mapstructure:"maxtokens" yaml:"maxtokens,omitempty"`
+	CustomHeader   string  `mapstructure:"customHeader" yaml:"customHeader,omitempty"`
 }
 
 func (p *AIProvider) GetBaseURL() string {

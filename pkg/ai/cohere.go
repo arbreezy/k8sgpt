@@ -30,7 +30,7 @@ type CohereClient struct {
 	temperature float32
 }
 
-func (c *CohereClient) Configure(config IAIConfig) error {
+func (c *CohereClient) Configure(config IAIConfig, _ string) error {
 	token := config.GetPassword()
 
 	client, err := cohere.CreateClient(token)

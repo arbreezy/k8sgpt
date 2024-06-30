@@ -23,7 +23,7 @@ type NoOpAIClient struct {
 	nopCloser
 }
 
-func (c *NoOpAIClient) Configure(_ IAIConfig) error {
+func (c *NoOpAIClient) Configure(_ IAIConfig, _ string) error {
 	return nil
 }
 

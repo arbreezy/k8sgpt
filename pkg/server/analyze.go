@@ -27,6 +27,7 @@ func (h *handler) Analyze(ctx context.Context, i *schemav1.AnalyzeRequest) (
 		i.Namespace,
 		i.Nocache,
 		i.Explain,
+		"",
 		int(i.MaxConcurrency),
 		false, // Kubernetes Doc disabled in server mode
 		false, // Interactive mode disabled in server mode

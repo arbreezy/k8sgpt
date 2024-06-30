@@ -34,7 +34,7 @@ type GoogleGenAIClient struct {
 	maxTokens   int
 }
 
-func (c *GoogleGenAIClient) Configure(config IAIConfig) error {
+func (c *GoogleGenAIClient) Configure(config IAIConfig, _ string) error {
 	ctx := context.Background()
 
 	// Access your API key as an environment variable (see "Set up your API key" above)

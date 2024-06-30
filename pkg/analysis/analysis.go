@@ -46,6 +46,7 @@ type Analysis struct {
 	Namespace          string
 	Cache              cache.ICache
 	Explain            bool
+	CustomHeader       string
 	MaxConcurrency     int
 	AnalysisAIProvider string // The name of the AI Provider used for this analysis
 	WithDoc            bool
@@ -76,6 +77,7 @@ func NewAnalysis(
 	namespace string,
 	noCache bool,
 	explain bool,
+	customHeader string,
 	maxConcurrency int,
 	withDoc bool,
 	interactiveMode bool,
@@ -146,7 +148,7 @@ func NewAnalysis(
 	}
 
 	aiClient := ai.NewClient(aiProvider.Name)
-	if err := aiClient.Configure(&aiProvider); err != nil {
+	if err := aiClient.Configure(&aiProvider, customHeader); err != nil {
 		return nil, err
 	}
 	a.AIClient = aiClient

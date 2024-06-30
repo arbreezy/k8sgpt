@@ -2,6 +2,7 @@ package ai
 
 import (
 	"context"
+
 	"github.com/hupe1980/go-huggingface"
 	"k8s.io/utils/ptr"
 )
@@ -18,7 +19,7 @@ type HuggingfaceClient struct {
 	maxTokens   int
 }
 
-func (c *HuggingfaceClient) Configure(config IAIConfig) error {
+func (c *HuggingfaceClient) Configure(config IAIConfig, _ string) error {
 	token := config.GetPassword()
 
 	client := huggingface.NewInferenceClient(token)

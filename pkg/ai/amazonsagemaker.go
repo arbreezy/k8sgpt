@@ -59,7 +59,7 @@ type Parameters struct {
 	Temperature  float64 `json:"temperature"`
 }
 
-func (c *SageMakerAIClient) Configure(config IAIConfig) error {
+func (c *SageMakerAIClient) Configure(config IAIConfig, _ string) error {
 
 	// Create a new AWS session
 	sess := session.Must(session.NewSessionWithOptions(session.Options{

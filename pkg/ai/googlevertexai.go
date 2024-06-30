@@ -95,7 +95,7 @@ func GetVertexAIRegionOrDefault(region string) string {
 	return VERTEXAI_DEFAULT_REGION
 }
 
-func (g *GoogleVertexAIClient) Configure(config IAIConfig) error {
+func (g *GoogleVertexAIClient) Configure(config IAIConfig, _ string) error {
 	ctx := context.Background()
 
 	// Currently you can access VertexAI either by being authenticated via OAuth or Bearer token so we need to consider both

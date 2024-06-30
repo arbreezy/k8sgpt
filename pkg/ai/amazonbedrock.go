@@ -92,7 +92,7 @@ func GetRegionOrDefault(region string) string {
 }
 
 // Configure configures the AmazonBedRockClient with the provided configuration.
-func (a *AmazonBedRockClient) Configure(config IAIConfig) error {
+func (a *AmazonBedRockClient) Configure(config IAIConfig, _ string) error {
 
 	// Create a new AWS session
 	providerRegion := GetRegionOrDefault(config.GetProviderRegion())

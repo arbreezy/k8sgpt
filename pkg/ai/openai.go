@@ -19,6 +19,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/k8sgpt-ai/k8sgpt/pkg/util"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -40,7 +41,7 @@ const (
 	topP             = 1.0
 )
 
-func (c *OpenAIClient) Configure(config IAIConfig) error {
+func (c *OpenAIClient) Configure(config IAIConfig, customHeader string) error {
 	token := config.GetPassword()
 	defaultConfig := openai.DefaultConfig(token)
 	proxyEndpoint := config.GetProxyEndpoint()
@@ -50,12 +51,13 @@ func (c *OpenAIClient) Configure(config IAIConfig) error {
 		defaultConfig.BaseURL = baseURL
 	}
 
+	transport := &http.Transport{}
 	if proxyEndpoint != "" {
 		proxyUrl, err := url.Parse(proxyEndpoint)
 		if err != nil {
 			return err
 		}
-		transport := &http.Transport{
+		transport = &http.Transport{
 			Proxy: http.ProxyURL(proxyUrl),
 		}
 
@@ -63,7 +65,25 @@ func (c *OpenAIClient) Configure(config IAIConfig) error {
 			Transport: transport,
 		}
 	}
-	
+
+	if customHeader != "" {
+		customHeaderKey, customHeaderValue, err := util.SplitHeader(customHeader)
+		if err != nil {
+			return err
+		}
+		defaultConfig.HTTPClient = &http.Client{
+			Transport: transport,
+			CheckRedirect: func(req *http.Request, via []*http.Request) error {
+				req.Header.Add(customHeaderKey, customHeaderValue)
+				// just a sane number of redirects before raising an error
+				if len(via) >= 10 {
+					return http.ErrUseLastResponse
+				}
+				return nil
+			},
+		}
+	}
+
 	client := openai.NewClientWithConfig(defaultConfig)
 	if client == nil {
 		return errors.New("error creating OpenAI client")

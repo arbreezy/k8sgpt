@@ -241,3 +241,14 @@ func LabelsIncludeAny(predefinedSelector, Labels map[string]string) bool {
 
 	return false
 }
+
+// Utility function to split a header string into key and value
+func SplitHeader(header string) (string, string, error) {
+	parts := strings.SplitN(header, ":", 2)
+	if len(parts) != 2 {
+		return "", "", errors.New("invalid header format; must be 'Key: Value'")
+	}
+	key := strings.TrimSpace(parts[0])
+	value := strings.TrimSpace(parts[1])
+	return key, value, nil
+}
